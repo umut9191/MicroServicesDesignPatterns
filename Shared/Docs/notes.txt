@@ -1,6 +1,10 @@
 ﻿packages;
 MassTransit.AspNetCore.
 For MessageBroker MassTransit.RabbitMQ
+microsoft.EntityFamewokCore
+microsoft.EntityFamewokCore.Tools for pmc migration 
+microsoft.EntityFamewokCore.Design
+microsoft.EntityFamewokCore.SqlServer
 not iis, kestrel server used. -> LaunchSettings ;
 for not using browser all "launchBrowser" is gonna be false,
 then on the chosing running project would not be iis express,it would be the project name we wanna run.Then
