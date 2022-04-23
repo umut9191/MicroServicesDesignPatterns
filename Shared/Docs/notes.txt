@@ -1,6 +1,6 @@
 ﻿packages;
 MassTransit
-MassTransit.AspNetCore.
+xxxxMassTransit.AspNetCore.xxxx
 For MessageBroker MassTransit.RabbitMQ
 microsoft.EntityFamewokCore
 microsoft.EntityFamewokCore.Tools for pmc migration 
