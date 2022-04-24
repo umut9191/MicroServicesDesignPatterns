@@ -11,3 +11,6 @@ for not using browser all "launchBrowser" is gonna be false,
 then on the chosing running project would not be iis express,it would be the project name we wanna run.Then
 it will work on cmd
 https://customer.cloudamqp.com/ 
+On StockApi;
+EF core 
+EF core in memory
