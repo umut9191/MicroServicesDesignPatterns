@@ -15,13 +15,13 @@ namespace Order.API.Controllers
         private readonly AppDbContext _context;
         private readonly IPublishEndpoint _publishEndpoint;
         //Masstransit te publish ve send kavramları vardır arasındaki fark;
-        //publish edince eğer bu mesajı subcribe eden yok ise bu mesaj boşa gider.
-        //publish edince rabbitmq de kimlerin dinlediğini bilmezsin(her subcribe olmuşlar bilgiye ulaşabilir). Bu event direk olarak excahange ye gider yani
-        //direk olarak kuyruğa gitmez. Eğer exchangeye giderse ve o exchangeye subcribe olmuş bir kuyruk yok ise
+        //publish edince eğer bu mesajı subscribe eden yok ise bu mesaj boşa gider.
+        //publish edince rabbitmq de kimlerin dinlediğini bilmezsin(her subscribe olmuşlar bilgiye ulaşabilir). Bu event direk olarak excahange ye gider yani
+        //direk olarak kuyruğa gitmez. Eğer exchangeye giderse ve o exchangeye subscribe olmuş bir kuyruk yok ise
         //boşa gider mesajlarımız.
         //send methodu ise direk olarak kuyruğa gönderir.
-        //publish ile gönderilmiş event lere herhangi bir servis subcribe olabilir. Ama send ile gönderilen event
-        //direk kuyruğa gittiğinden dolayı sadece kuyruğa subcribe olduğumuzda alabiliriz.
+        //publish ile gönderilmiş event lere herhangi bir servis subscribe olabilir. Ama send ile gönderilen event
+        //direk kuyruğa gittiğinden dolayı sadece kuyruğa subscribe olduğumuzda alabiliriz.
         //Özetle bir eventi birden fazla servis dinleyecek ise publish yapılır.
         //sadece bir servis dinleyecek ise ozaman send kullanılır. bir kuyruğa gönderme yapılır ve onu bir servis dinler.
         public OrdersController(AppDbContext appDbContext,IPublishEndpoint publishEndpoint)

@@ -14,3 +14,4 @@ https://customer.cloudamqp.com/
 On StockApi;
 EF core 
 EF core in memory
+consumers = subscribe
