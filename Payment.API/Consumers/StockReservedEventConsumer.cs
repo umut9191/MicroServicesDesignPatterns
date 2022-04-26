@@ -21,7 +21,7 @@ namespace Payment.API.Consumers
             {
                 _logger.LogInformation($"{context.Message.payment.TotalPrice} TL was withdraw from credit card" +
                     $"for userId ={context.Message.BuyerId}");
-                await _publishEndpoint.Publish(new PaymentSuccessedEvent() { BuyerId = context.Message.BuyerId, 
+                await _publishEndpoint.Publish(new PaymentCompletedEvent() { BuyerId = context.Message.BuyerId, 
                 OrderId = context.Message.OrderId});
             }
             else
