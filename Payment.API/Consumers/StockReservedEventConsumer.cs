@@ -32,6 +32,7 @@ namespace Payment.API.Consumers
                 {
                     BuyerId = context.Message.BuyerId,
                     OrderId = context.Message.OrderId,
+                    OrderItems = context.Message.OrderItems,
                     Message = $"{context.Message.payment.TotalPrice} TL was not withdraw from credit card" +
                     $"for user Id= {context.Message.BuyerId}"
                 });
