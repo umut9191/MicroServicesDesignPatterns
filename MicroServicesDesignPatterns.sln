@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32328.378
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order.API", "Order.API\Order.API.csproj", "{74530F03-83AB-4E8C-A7D1-D116A4BB2EB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order.API", "Order.API\Order.API.csproj", "{74530F03-83AB-4E8C-A7D1-D116A4BB2EB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stock.API", "Stock.API\Stock.API.csproj", "{5B74B611-A583-4211-8954-6CA96B369E24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Stock.API", "Stock.API\Stock.API.csproj", "{5B74B611-A583-4211-8954-6CA96B369E24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payment.API", "Payment.API\Payment.API.csproj", "{33355E37-4E88-4018-A1E0-89F0C0DB31BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Payment.API", "Payment.API\Payment.API.csproj", "{33355E37-4E88-4018-A1E0-89F0C0DB31BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{8239153B-9F13-46AB-8531-2D04CFDDCB4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{8239153B-9F13-46AB-8531-2D04CFDDCB4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SagaStateMachineWorkerService", "SagaStateMachineWorkerService\SagaStateMachineWorkerService.csproj", "{6FA155DE-14E3-4E91-807F-38B5EE447326}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{8239153B-9F13-46AB-8531-2D04CFDDCB4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8239153B-9F13-46AB-8531-2D04CFDDCB4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8239153B-9F13-46AB-8531-2D04CFDDCB4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FA155DE-14E3-4E91-807F-38B5EE447326}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FA155DE-14E3-4E91-807F-38B5EE447326}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FA155DE-14E3-4E91-807F-38B5EE447326}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FA155DE-14E3-4E91-807F-38B5EE447326}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
