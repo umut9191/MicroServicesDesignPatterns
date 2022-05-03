@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Order.API.DTOs;
 using Order.API.Models;
 using Shared;
+using Shared.Events;
 
 namespace Order.API.Controllers
 {
@@ -13,7 +14,7 @@ namespace Order.API.Controllers
     {
         //on real word we use services or repository pattern to use instead of context but here it is not main topic
         private readonly AppDbContext _context;
-        private readonly IPublishEndpoint _publishEndpoint;
+      //  private readonly IPublishEndpoint _publishEndpoint;
         //Masstransit te publish ve send kavramları vardır arasındaki fark;
         //publish edince eğer bu mesajı subscribe eden yok ise bu mesaj boşa gider.
         //publish edince rabbitmq de kimlerin dinlediğini bilmezsin(her subscribe olmuşlar bilgiye ulaşabilir). Bu event direk olarak excahange ye gider yani
@@ -24,10 +25,14 @@ namespace Order.API.Controllers
         //direk kuyruğa gittiğinden dolayı sadece kuyruğa subscribe olduğumuzda alabiliriz.
         //Özetle bir eventi birden fazla servis dinleyecek ise publish yapılır.
         //sadece bir servis dinleyecek ise ozaman send kullanılır. bir kuyruğa gönderme yapılır ve onu bir servis dinler.
-        public OrdersController(AppDbContext appDbContext,IPublishEndpoint publishEndpoint)
+
+        // for orchestration;
+        private readonly ISendEndpointProvider _sendEndpointProvider;
+        public OrdersController(AppDbContext appDbContext,/*IPublishEndpoint publishEndpoint,*/ ISendEndpointProvider sendEndpointProvider)
         {
             _context = appDbContext;
-            _publishEndpoint = publishEndpoint;
+            //  _publishEndpoint = publishEndpoint;
+            _sendEndpointProvider = sendEndpointProvider;
         }
         [HttpPost]
         public async Task<IActionResult> Create(OrderCreateDto orderCreate)
@@ -53,7 +58,8 @@ namespace Order.API.Controllers
             });
             await _context.AddAsync(newOrder);
             await _context.SaveChangesAsync();
-            var orderCreatedEvent = new OrderCreatedEvent()
+            //we changed  OrderCreatedEvent to OrderCreatedRequestEvent
+            var orderCreatedRequestEvent = new OrderCreatedRequestEvent()
             {
                 BuyerId= orderCreate.BuyerId,
                 OrderId= newOrder.Id,
@@ -66,7 +72,7 @@ namespace Order.API.Controllers
                 }
             };
             orderCreate.orderItems.ForEach((item) => {
-                orderCreatedEvent.OrderItems.Add(new OrderItemMessage()
+                orderCreatedRequestEvent.OrderItems.Add(new OrderItemMessage()
                 {
                     ProductId = item.ProductId,
                     Count = item.Count,
@@ -74,7 +80,14 @@ namespace Order.API.Controllers
 
 
             });
-            await _publishEndpoint.Publish(orderCreatedEvent);
+            //tabi burada uri belirlerken mass transit in belirlemiş olduğu şekilde kullanacağız;
+            var sendEntPoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{RabbitMqSettingsConsts.OrderSaga}"));
+            //publish etseydik kuyruk ismini vermeye gerek olmayacaktı. Çünkü kim sucribe olacak ise o kuyruk ismini versin.
+            //ama eğer publish edilince dinleyen kimse yok ise işte ozaman event boşa gider. Fakat sen edince kuyruk belli olduğu için 
+            //işte ozaman dinleyecek o an orada olmasa bile bağlandığı zaman ilgili event te ulaşabilecek. Yani boşa gitmeyecek.
+
+            await sendEntPoint.Send(orderCreatedRequestEvent);
+            //await _publishEndpoint.Publish(orderCreatedEvent);
             return Ok();
         }
     }

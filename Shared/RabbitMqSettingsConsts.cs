@@ -8,6 +8,8 @@ namespace Shared
 {
     public class RabbitMqSettingsConsts
     {
+        public const string OrderSaga = "order-saga-queue";
+        //------//
         public const string StockOReservedEventQueueName = "stock-reserved-queue";
         public const string StockNotReservedEventQueueName = "Order-stock-not--reserved-queue";
         public const string StockOrderCreatedEventQueueName = "stock-order-created-queue";
