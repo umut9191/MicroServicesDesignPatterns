@@ -2,6 +2,7 @@
 using MassTransit;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 using System.Text;
@@ -21,6 +22,7 @@ namespace SagaStateMachineWorkerService.Models
         public string CardNumber { get; set; }
         public string Expiration { get; set; }
         public string CVV { get; set; }
+        [Column(TypeName ="decimal(18,2)")]
         public decimal TotalPrice { get; set; }
 
         public DateTime CreatedDate { get; set; }
