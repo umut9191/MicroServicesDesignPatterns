@@ -13,15 +13,28 @@ namespace SagaStateMachineWorkerService.Models
     {
         public Event<IOrderCreatedRequestEvent> OrderCreatedRequestEvent { get; set; }
         public Event<IStockReservedEvent> StockReservedEvent { get; set; }
+        public Event<IPaymentSuccessedEvent> PaymentCompletedEvent { get; set; }
         public State OrderCreated { get; private set; }
         public State StockReserved { get; private set; }
+        public State PaymentCompleted { get; private set; }
         public OrderStateMachine()
         {
             InstanceState(x => x.CurrentState);
-            //aynısı db de var ise tekrar oluşmasın;
+            //OrderCreatedRequestEvent oluşunca aynısı db de var ise tekrar oluşmasın;
             //eğer yok ise yeni bir satır oluştur ve oluşturduğun OrderStateInstance in CorrelationId ne yeni bir değer ata.
             Event(() => OrderCreatedRequestEvent, y => y.CorrelateBy<int>(x => x.OrderId, z => z.Message.OrderId)
             .SelectId(context => Guid.NewGuid()));
+
+            //when StockReservedEvent occure use CorrelationId on db
+            Event(() => StockReservedEvent, x => x.CorrelateById(y=>y.Message.CorrelationId));
+
+            //when PaymentCompletedEvent occure use CorrelationId on db
+            Event(() => PaymentCompletedEvent, x => x.CorrelateById(y => y.Message.CorrelationId));
+
+
+
+
+
             //instanceler veritabanındaki Data lar ise Eventteki 
             Initially(When(OrderCreatedRequestEvent).Then(context =>
             {
@@ -65,6 +78,20 @@ namespace SagaStateMachineWorkerService.Models
                  .Then(context =>
                  {
                      Console.WriteLine($"StockReservedEvent after : {context.Instance}");//toString() override methodu çalışacak.
+                 })
+                );
+
+            //PaymentCompletedEvent
+            During(StockReserved,
+                When(PaymentCompletedEvent)
+                .TransitionTo(PaymentCompleted)
+             .Publish(context => new OrderRequestPaymentCompletedEvent() { OrderId = context.Instance.OrderId})
+                 .Then(context =>
+                 {
+                     Console.WriteLine($"OrderRequestPaymentCompletedEvent after : {context.Instance}");//toString() override methodu çalışacak.
+                 }).Finalize().Then(context =>
+                 {
+                     Console.WriteLine($"OrderRequestPaymentCompletedEvent after Finalize : {context.Instance}");//toString() override methodu çalışacak.
                  })
                 );
         }
