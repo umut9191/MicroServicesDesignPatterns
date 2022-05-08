@@ -1,13 +1,19 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Shared;
+using Stock.API.Consumers;
 using Stock.API.Models;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMassTransit(x =>
 {
+    x.AddConsumer<OrderCreatedEventConsumer>();
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(builder.Configuration.GetConnectionString("RabbitMQAMQPURL"));
+        cfg.ReceiveEndpoint(RabbitMqSettingsConsts.StockOrderCreatedEventQueueName, e =>
+        {
+            e.ConfigureConsumer<OrderCreatedEventConsumer>(context);
+        });
     });
 });
 builder.Services.AddMassTransitHostedService();

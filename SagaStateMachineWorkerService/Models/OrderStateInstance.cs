@@ -34,9 +34,9 @@ namespace SagaStateMachineWorkerService.Models
             var sb = new StringBuilder();
             properties.ToList().ForEach(p => {
                 var value = p.GetValue(this,null);
-                sb.Append($"{p.Name}:{value?.ToString()}");
+                sb.AppendLine($"{p.Name}:{value?.ToString()}");
             });
-            sb.Append("------------------------------");
+            sb.AppendLine("------------------------------");
             return sb.ToString();
         }
     }

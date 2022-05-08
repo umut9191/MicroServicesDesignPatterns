@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,13 @@ using System.Threading.Tasks;
 
 namespace Shared
 {
-    public class StockNotReservedEvent
+    public class StockNotReservedEvent: IStockNotReservedEvent
     {
-        public int OrderId { get; set; }
-        public string? message { get; set; }
+        public StockNotReservedEvent(Guid correlationId)
+        {
+            CorrelationId = correlationId;
+        }
+        public Guid CorrelationId { get; }
+        public string? reason { get; set ; }
     }
 }
