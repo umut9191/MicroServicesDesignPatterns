@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,11 +7,14 @@ using System.Threading.Tasks;
 
 namespace Shared
 {
-    public class PaymentFailedEvent
+    public class PaymentFailedEvent: IPaymentFailedEvent
     {
-        public int OrderId { get; set; }
-        public int BuyerId { get; set; }
-        public string Message { get; set; }
+        public PaymentFailedEvent(Guid correlationId)
+        {
+            CorrelationId = correlationId;
+        }
         public List<OrderItemMessage> OrderItems { get; set; }
+        public string Reason { get; set; }
+        public Guid CorrelationId { get; }
     }
 }
