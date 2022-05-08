@@ -7,12 +7,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<OrderCreatedEventConsumer>();
+    x.AddConsumer<StockRollBackMessageConsumer>();
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(builder.Configuration.GetConnectionString("RabbitMQAMQPURL"));
         cfg.ReceiveEndpoint(RabbitMqSettingsConsts.StockOrderCreatedEventQueueName, e =>
         {
             e.ConfigureConsumer<OrderCreatedEventConsumer>(context);
+        });
+        cfg.ReceiveEndpoint(RabbitMqSettingsConsts.StockRollBackMessageQueueName, e =>
+        {
+            e.ConfigureConsumer<StockRollBackMessageConsumer>(context);
         });
     });
 });

@@ -2,6 +2,7 @@
 using Shared;
 using Shared.Events;
 using Shared.Interfaces;
+using Shared.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,12 @@ namespace SagaStateMachineWorkerService.Models
         public Event<IStockReservedEvent> StockReservedEvent { get; set; }
         public Event<IStockNotReservedEvent> StockNotReservedEvent { get; set; }
         public Event<IPaymentSuccessedEvent> PaymentCompletedEvent { get; set; }
+        public Event<IPaymentFailedEvent> PaymentFailedEvent { get; set; }
         public State OrderCreated { get; private set; }
         public State StockReserved { get; private set; }
         public State PaymentCompleted { get; private set; }
         public State StockNotReserved { get; private set; }
+        public State PaymentFailed { get; private set; }
         public OrderStateMachine()
         {
             InstanceState(x => x.CurrentState);
@@ -35,7 +38,8 @@ namespace SagaStateMachineWorkerService.Models
             Event(() => PaymentCompletedEvent, x => x.CorrelateById(y => y.Message.CorrelationId));
             //when StockNotReservedEvent occured  use CorrelationId on db
             Event(() => StockNotReservedEvent, x => x.CorrelateById(y => y.Message.CorrelationId));
-
+            //when PaymentFailedEvent occured  use CorrelationId on db
+            Event(() => PaymentFailedEvent, x => x.CorrelateById(y => y.Message.CorrelationId));
 
 
 
@@ -107,8 +111,27 @@ namespace SagaStateMachineWorkerService.Models
                  }).Finalize().Then(context =>
                  {
                      Console.WriteLine($"OrderRequestPaymentCompletedEvent after Finalize : {context.Instance}");//toString() override methodu çalışacak.
-                 })
+                 }),
+                When(PaymentFailedEvent)               
+                    .Publish(context => new OrderRequestFailedEvent()
+                    {
+                        OrderId = context.Instance.OrderId,
+                        Reason = context.Data.Reason
+
+                    })
+                   .Send(new Uri($"queue:{RabbitMqSettingsConsts.StockRollBackMessageQueueName}"),
+                context => new StockRollBackMessage()
+                {
+                    OrderId = context.Instance.OrderId,
+                    OrderItems = context.Data.OrderItems,
+                })
+                    .TransitionTo(PaymentFailed).Then(context =>
+                    {
+                        Console.WriteLine($"PaymentFailedEvent after : {context.Instance}");//toString() override methodu çalışacak.
+                    })
                 );
+
+            SetCompletedWhenFinalized();//final olanları sil db den.
         }
     }
 }
