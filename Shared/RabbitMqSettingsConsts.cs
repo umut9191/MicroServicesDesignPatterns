@@ -9,6 +9,7 @@ namespace Shared
     public class RabbitMqSettingsConsts
     {
         public const string OrderSaga = "order-saga-queue";
+        public const string StockReservedRequestPaymentEventQueueName = "stock-reserved-request-payment-event-queue";
         //------//
         public const string StockOReservedEventQueueName = "stock-reserved-queue";
         public const string StockNotReservedEventQueueName = "Order-stock-not--reserved-queue";
@@ -16,6 +17,8 @@ namespace Shared
         public const string OrderPaymentCompletedEventQueueName = "order-payment-completed-queue";
         public const string OrderPaymentFailedEventQueueName = "order-payment-failed-queue";
         public const string StockPaymentFailedEventQueueName = "stock-payment-failed-queue";
+
+
 
     }
 }
