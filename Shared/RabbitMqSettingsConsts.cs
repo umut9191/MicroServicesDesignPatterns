@@ -10,7 +10,8 @@ namespace Shared
     {
         public const string OrderSaga = "order-saga-queue";
         public const string StockReservedRequestPaymentEventQueueName = "stock-reserved-request-payment-event-queue";
-        public const String OrderRequestPaymentCompletedEventQueueName = "order-request-payment-completed-event-queue";
+        public const string OrderRequestCompletedEventQueueName = "order-request-completed-event-queue";
+        public const string OrderRequestFailedEventQueueName = "order-request-failed-event-queue";
         //------//
         public const string StockOReservedEventQueueName = "stock-reserved-queue";
         public const string StockNotReservedEventQueueName = "Order-stock-not--reserved-queue";

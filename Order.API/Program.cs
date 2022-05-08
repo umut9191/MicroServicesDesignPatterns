@@ -12,12 +12,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<OrderRequestPaymentCompletedEventConsumer>();
+    x.AddConsumer<OrderRequestFailedEventConsumer>();
+    
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(builder.Configuration.GetConnectionString("RabbitMQAMQPURL"));
-        cfg.ReceiveEndpoint(RabbitMqSettingsConsts.OrderRequestPaymentCompletedEventQueueName, e =>
+        cfg.ReceiveEndpoint(RabbitMqSettingsConsts.OrderRequestCompletedEventQueueName, e =>
         {
             e.ConfigureConsumer<OrderRequestPaymentCompletedEventConsumer>(context);
+        });
+        cfg.ReceiveEndpoint(RabbitMqSettingsConsts.OrderRequestFailedEventQueueName, e =>
+        {
+            e.ConfigureConsumer<OrderRequestFailedEventConsumer>(context);
         });
     });
 });

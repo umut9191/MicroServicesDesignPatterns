@@ -1,5 +1,6 @@
 ﻿using MassTransit;
 using Shared;
+using Shared.Events;
 using Shared.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,12 @@ namespace SagaStateMachineWorkerService.Models
     {
         public Event<IOrderCreatedRequestEvent> OrderCreatedRequestEvent { get; set; }
         public Event<IStockReservedEvent> StockReservedEvent { get; set; }
+        public Event<IStockNotReservedEvent> StockNotReservedEvent { get; set; }
         public Event<IPaymentSuccessedEvent> PaymentCompletedEvent { get; set; }
         public State OrderCreated { get; private set; }
         public State StockReserved { get; private set; }
         public State PaymentCompleted { get; private set; }
+        public State StockNotReserved { get; private set; }
         public OrderStateMachine()
         {
             InstanceState(x => x.CurrentState);
@@ -28,9 +31,10 @@ namespace SagaStateMachineWorkerService.Models
             //when StockReservedEvent occure use CorrelationId on db
             Event(() => StockReservedEvent, x => x.CorrelateById(y=>y.Message.CorrelationId));
 
-            //when PaymentCompletedEvent occure use CorrelationId on db
+            //when PaymentCompletedEvent occured use CorrelationId on db
             Event(() => PaymentCompletedEvent, x => x.CorrelateById(y => y.Message.CorrelationId));
-
+            //when StockNotReservedEvent occured  use CorrelationId on db
+            Event(() => StockNotReservedEvent, x => x.CorrelateById(y => y.Message.CorrelationId));
 
 
 
@@ -78,7 +82,18 @@ namespace SagaStateMachineWorkerService.Models
                  .Then(context =>
                  {
                      Console.WriteLine($"StockReservedEvent after : {context.Instance}");//toString() override methodu çalışacak.
-                 })
+                 }),
+                When(StockNotReservedEvent)
+                .TransitionTo(StockNotReserved)
+                .Publish(context=> new OrderRequestFailedEvent() 
+                { 
+                    OrderId = context.Instance.OrderId,
+                    Reason =  context.Data.reason
+                
+                }).Then(context =>
+                {
+                    Console.WriteLine($"StockNotReservedEvent after : {context.Instance}");//toString() override methodu çalışacak.
+                })
                 );
 
             //PaymentCompletedEvent
