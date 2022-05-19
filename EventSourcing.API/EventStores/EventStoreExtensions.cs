@@ -1,4 +1,6 @@
 ﻿using EventStore.ClientAPI;
+using MediatR;
+using System.Reflection;
 
 namespace EventSourcing.API.EventStores
 {
@@ -10,6 +12,7 @@ namespace EventSourcing.API.EventStores
             connection.ConnectAsync().Wait();
             services.AddSingleton(connection);
             services.AddSingleton<ProductStream>();
+            services.AddMediatR(Assembly.GetExecutingAssembly());
 
             using var logFactory = LoggerFactory.Create(builder =>
             {
