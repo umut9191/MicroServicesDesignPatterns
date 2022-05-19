@@ -1,7 +1,12 @@
 using EventSourcing.API.EventStores;
+using EventSourcing.API.Models;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection"));
+});
 // Add services to the container.
 builder.Services.AddEventStore(builder.Configuration);
 builder.Services.AddControllers();
