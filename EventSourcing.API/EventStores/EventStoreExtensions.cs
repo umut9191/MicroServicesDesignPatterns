@@ -9,6 +9,7 @@ namespace EventSourcing.API.EventStores
             var connection = EventStoreConnection.Create(connectionString: configuration.GetConnectionString("EventStore"));
             connection.ConnectAsync().Wait();
             services.AddSingleton(connection);
+            services.AddSingleton<ProductStream>();
 
             using var logFactory = LoggerFactory.Create(builder =>
             {
