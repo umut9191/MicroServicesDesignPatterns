@@ -8,6 +8,7 @@ namespace EventSourcing.API.EventStores
     {
         //buradakinin anlamı sadece get yapılıyor set bloğu olmayan property demektir.
         public static string StreamName => "ProductStream";
+        public static string GroupName => "agroup";
         public ProductStream(IEventStoreConnection eventStoreConnection) : base(StreamName, eventStoreConnection)
         {
         }
