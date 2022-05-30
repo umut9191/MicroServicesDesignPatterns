@@ -38,15 +38,25 @@ namespace EventSourcing.API.BackgroundServices
             //ilgili stream ın ilgili group una event eklendiğinde ya da beklemede olan eventler olduğunda buraya gelirler
             //ve aşağıda oluşturduğumuz EventAppeared isimli method çalışacak
             //autoAck :false eğer true olsaydı message brokker bizim bu mesajı alıp işlediğimizi kabul eder. ama false için bizden cevap bekler.
-            await _eventStoreConnection.ConnectToPersistentSubscriptionAsync(
-                ProductStream.StreamName, ProductStream.GroupName, EventAppeared,autoAck :false);
-           //Uygulama ayağa kalktığı zaman çalışacak yerdir.
+
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                await Task.Delay(10000, stoppingToken);
+                await _eventStoreConnection.ConnectToPersistentSubscriptionAsync(
+               ProductStream.StreamName, ProductStream.GroupName, EventAppeared, autoAck: false);
+
+            }
+           
+           
+            
+            //Uygulama ayağa kalktığı zaman çalışacak yerdir.
         }
         private async Task EventAppeared(EventStorePersistentSubscriptionBase arg1,ResolvedEvent arg2)
         {
-            _logger.LogInformation("The Message processing ...");
+           
             //gelen eventin tipi;
             var type = Type.GetType($"{Encoding.UTF8.GetString(arg2.Event.Metadata)}, EventSourcing.Shared");
+            _logger.LogInformation($"The Message processing ... :{type?.ToString()}");
             //gelen eventin datası;
             var eventData = Encoding.UTF8.GetString(arg2.Event.Data);
 

@@ -29,7 +29,7 @@ namespace EventSourcing.API.EventStores
         {
             Events.AddLast(new ProductNameChangedEvent
             {
-                Id = Guid.NewGuid(),
+                Id = changeProductNameDto.Id,
                 ChangedName = changeProductNameDto.Name,
             });
         }
@@ -37,7 +37,7 @@ namespace EventSourcing.API.EventStores
         {
             Events.AddLast(new ProductPriceChangedEvent
             {
-                Id = Guid.NewGuid(),
+                Id = changeProductPriceDto.Id,
                 ChangedPrice = changeProductPriceDto.Price,
             });
         }

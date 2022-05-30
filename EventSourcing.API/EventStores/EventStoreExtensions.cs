@@ -1,4 +1,5 @@
-﻿using EventStore.ClientAPI;
+﻿using EventSourcing.API.BackgroundServices;
+using EventStore.ClientAPI;
 using MediatR;
 using System.Reflection;
 
@@ -13,6 +14,7 @@ namespace EventSourcing.API.EventStores
             services.AddSingleton(connection);
             services.AddSingleton<ProductStream>();
             services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddHostedService<ProductReadModelEventStore>();
 
             using var logFactory = LoggerFactory.Create(builder =>
             {
